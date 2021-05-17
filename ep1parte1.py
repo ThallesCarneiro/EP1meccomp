@@ -41,9 +41,9 @@ def edo(condicoes):
 
     return dy
 
-def euler(c_i,t,d_t):
+def euler(c_i,t,dt):
     #Recebe as condições iniciais, tempo de integração e o passo de integração, retorna uma matriz 6*n de passos com a solução da EDO
-    passos = math.floor(t/d_t)
+    passos = math.floor(t/dt)
     solucao = np.array([[0.0]*4]*passos)
     aceleracoes =np.array([[0.0]*2]*passos)
 
@@ -53,17 +53,53 @@ def euler(c_i,t,d_t):
 
     for n in range(1,passos):
         dy = edo(solucao[n-1])
-        solucao[n] = solucao[n-1] + d_t*dy
+        solucao[n] = solucao[n-1] + dt*dy
         aceleracoes[n][0] = dy[1]
         aceleracoes[n][1] = dy[3]
 
     return solucao, aceleracoes
        
-#def rk2():
-    #retorna uma matriz 4*refino da malha
-#def rk4():
-    #retorna uma matriz 4*refino da malha
+def rk2(c_i,t,dt):
+    passos = math.floor(t/dt)
+    solucao = np.array([[0.0]*4]*passos)
+    aceleracoes =np.array([[0.0]*2]*passos)
+
+    solucao[0] = c_i
+    aceleracoes[0][0] = edo(c_i)[1]
+    aceleracoes[0][1] = edo(c_i)[3]    
+
+    for n in range(1,passos):
+        k1 = edo(solucao[n-1])
+        k2 = edo(solucao[n-1] + (dt/2)*k1)
+
+        solucao[n] = solucao[n-1] + dt*k2
+        aceleracoes[n][0] = k2[1]
+        aceleracoes[n][1] = k2[3]
+
+    return solucao,aceleracoes
+
+def rk4(c_i,t,dt):
+    passos = math.floor(t/dt)
+    solucao = np.array([[0.0]*4]*passos)
+    aceleracoes =np.array([[0.0]*2]*passos)
+
+    solucao[0] = c_i
+    aceleracoes[0][0] = edo(c_i)[1]
+    aceleracoes[0][1] = edo(c_i)[3]       
+
+    for n in range(1,passos):
+        k1 = edo(solucao[n-1])
+        k2 = edo(solucao[n-1] + (dt/2)*k1)
+        k3 = edo(solucao[n-1] + (dt/2)*k2)
+        k4 = edo(solucao[n-1] + (dt)*k3)
+        
+        solucao[n] = solucao[n-1] + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
+        aceleracoes[n][0] = k4[1]
+        aceleracoes[n][1] = k4[3]
+        
+    return solucao,aceleracoes
+
 #def graficos():
     #recebe uma matriz e plota gráficos
 
-print (euler(condicoes_iniciais,20,1))
+print (rk4(condicoes_iniciais,20,1))
