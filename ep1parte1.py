@@ -25,7 +25,8 @@ x_i = 0
 x_d_i =0
 condicoes_iniciais = np.array([x_i,x_d_i,theta_i,theta_d_i])
 
-
+####################
+#Implementação das Solucoes de EDOs
 def edo(condicoes):
     #Recebe os valores de x1,x2,theta1 e theta2, 
     x1 = condicoes[0]
@@ -96,8 +97,12 @@ def rk4(c_i,t,dt):
         solucao[n] = solucao[n-1] + (dt/6)*(k1 + 2*k2 + 2*k3 + k4)
         aceleracoes[n][0] = k4[1]
         aceleracoes[n][1] = k4[3]
-        
+
     return solucao,aceleracoes
+
+
+####################
+#Implementação da geração de gráficos
 
 #def graficos():
     #recebe uma matriz e plota gráficos
