@@ -28,15 +28,15 @@ condicoes_iniciais = np.array([x_i,x_d_i,theta_i,theta_d_i])
 ####################
 #Implementação das Solucoes de EDOs
 def edo(condicoes):
-    #Recebe os valores de x1,x2,theta1 e theta2, 
+    #Recebe os valores de x1,x2,theta1 e theta2, retorna a array dy 
     x1 = condicoes[0]
     x2 = condicoes[1]
     theta1 = condicoes[2]
     theta2 = condicoes[3]
 
-    theta2_d = (((theta2*m1*L)**2)*math.sin(theta1)*math.cos(theta1) - 2*I*w*theta2*m_total + m1*L*math.sin(theta1))/(m1*L**2*(m_total-m1*(math.sin(theta1)**2)))
+    theta2_d = (((theta2*m1*L)**2)*math.sin(theta1)*math.cos(theta1) - 2*I*w*theta2*m_total + m1*L*math.sin(theta1)*(F-F1*math.cos(theta1)))/(m1*(L**2)*(m_total-m1*(math.sin(theta1)**2)))
 
-    x2_d = (-F + F1*math.cos(theta1) -m1*L*(math.cos(theta1)*theta2**2 +theta2_d*math.sin(theta1)))/(m_total)
+    x2_d = (-F + F1*math.cos(theta1) -m1*L*(math.cos(theta1)*(theta2**2) +theta2_d*math.sin(theta1)))/(m_total)
 
     dy = np.array([x2,x2_d,theta2,theta2_d])
 
@@ -104,7 +104,16 @@ def rk4(c_i,t,dt):
 ####################
 #Implementação da geração de gráficos
 
-#def graficos():
-    #recebe uma matriz e plota gráficos
+def graficos(solucao,aceleracoes,t,dt):
+    fig, axis = plt.subplots(2,1)
+    axis[0].plot(np.arange(0.0,t,dt),solucao[:,1])
+    axis[0].plot(np.arange(0.0,t,dt),aceleracoes[:,0])
 
-print (rk4(condicoes_iniciais,20,1))
+    axis[1].plot(np.arange(0.0,t,dt),solucao[:,3])
+    axis[1].plot(np.arange(0.0,t,dt),aceleracoes[:,1])
+    
+    plt.show()
+
+
+solucao,aceleracoes =rk4(condicoes_iniciais,20,0.01)
+graficos(solucao,aceleracoes,20,0.01)
